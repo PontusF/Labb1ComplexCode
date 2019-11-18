@@ -1,5 +1,4 @@
 package se.alten.schoolproject.entity;
-
 import lombok.*;
 import se.alten.schoolproject.model.StudentModel;
 
@@ -16,12 +15,12 @@ import java.util.List;
 import java.util.Set;
 
 @Entity //måste finnas
-@Table(name="student")
+@Table(name="teacher")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Student implements Serializable {
+public class Teacher implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,55 +39,73 @@ public class Student implements Serializable {
     private String email;
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    @JoinTable(name = "student_subject",
-            joinColumns=@JoinColumn(name="stud_id", referencedColumnName = "id"),
+    @JoinTable(name = "teacher_subject",
+            joinColumns=@JoinColumn(name="teach_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "subj_id", referencedColumnName = "id"))
     private Set<Subject> subject = new HashSet<>();
 
     @Transient
     private List<String> subjects = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "student", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    private Set<Teacher> teachers = new HashSet<>();
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(name = "teacher_student",
+            joinColumns=@JoinColumn(name="teach_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "stud_id", referencedColumnName = "id"))
+    private Set<Student> student = new HashSet<>();
+
+    @Transient
+    private List<String> students = new ArrayList<>();
 
 
-    public Student toEntity(String studentModel) {
+    public Teacher toEntity(String teacherModel) {
 
         List<String> temp = new ArrayList<>();
 
-        JsonReader reader = Json.createReader(new StringReader(studentModel));
+        JsonReader reader = Json.createReader(new StringReader(teacherModel));
 
         JsonObject jsonObject = reader.readObject();
 
-        Student student = new Student();
+        Teacher teacher = new Teacher();
         if ( jsonObject.containsKey("forename")) {
-            student.setForename(jsonObject.getString("forename"));
+            teacher.setForename(jsonObject.getString("forename"));
         } else {
-            student.setForename("");
+            teacher.setForename("");
         }
 
         if ( jsonObject.containsKey("lastname")) {
-            student.setLastname(jsonObject.getString("lastname"));
+            teacher.setLastname(jsonObject.getString("lastname"));
         } else {
-            student.setLastname("");
+            teacher.setLastname("");
         }
 
         if ( jsonObject.containsKey("email")) {
-            student.setEmail(jsonObject.getString("email"));
+            teacher.setEmail(jsonObject.getString("email"));
         } else {
-            student.setEmail("");
+            teacher.setEmail("");
         }
 
         if (jsonObject.containsKey("subject")) {
             JsonArray jsonArray = jsonObject.getJsonArray("subject");
             for ( int i = 0; i < jsonArray.size(); i++ ){
                 temp.add(jsonArray.get(i).toString().replace("\"", ""));
-                student.setSubjects(temp);
+                teacher.setSubjects(temp);
             }
         } else {
-            student.setSubjects(null);
+            teacher.setSubjects(null);
         }
 
-        return student;
+        if (jsonObject.containsKey("student")) {
+            JsonArray jsonArray = jsonObject.getJsonArray("student");
+            for ( int i = 0; i < jsonArray.size(); i++ ){
+                temp.add(jsonArray.get(i).toString().replace("\"", ""));
+                teacher.setStudents(temp);
+            }
+        } else {
+            teacher.setSubjects(null);
+        }
+
+        return teacher;
     }
 }
+
+

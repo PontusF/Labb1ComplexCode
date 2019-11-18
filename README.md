@@ -44,27 +44,126 @@ EndPoints och dess info:
 
 **DELETE localhost:8080/school/student/exampleMail@example.com**
 
+**POST localhost:8080/school/teacher/add**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+
+{
+    "forename": "boi",
+    "lastname": "joe",
+    "email": "teach@example.com"
+}
+
+**GET localhost:8080/school/teacher**
+
+**GET localhost:8080/school/teacher/teach@example.com**
+
+**PUT localhost:8080/school/teacher**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"forename": "bosse",
+	"lastname": "Svensson",
+	"email": "teach@example.com"
+}
+
+**PATCH localhost:8080/school/teacher**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"forename": "bo",
+	"email": "teach@example.com"
+}
+
+
+**POST localhost:8080/school/teacher/addStudent**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"teacherEmail":"teach1@example.com",
+	"studentEmail":"example@example.com"
+}
+
+**DELETE localhost:8080/school/teacher/removeStudent**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"teacherEmail":"teach1@example.com",
+	"studentEmail":"example@example.com"
+}
+
+**POST localhost:8080/school/subject/add**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"subject":"swedish"
+}
+
+**GET localhost:8080/school/subject**
+
+**GET localhost:8080/school/subject/specific**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+["complex java", "swedish", "math"]
+
+**DELETE localhost:8080/school/subject/swedish**
+
+**POST localhost:8080/school/subject/addTeacher**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"subject":"swedish",
+	"teacherEmail":"teach1@example.com"
+}
+
+**DELETE localhost:8080/school/subject/removeTeacher**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"subject":"swedish",
+	"teacherEmail":"teach1@example.com"
+}
+
+
+**POST localhost:8080/school/subject/addStudent**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"subject":"swedish",
+	"studentEmail":"example@example.com"
+}
+
+
+**REMOVE localhost:8080/school/subject/removeStudent**
+**Header:** Content-Type Value: application/json
+**body:** JSON
+**exampleBody:**
+{
+	"subject":"swedish",
+	"studentEmail":"example@example.com"
+}
+
+
+
 
 
 
 Jag har arbetat självständigt, med feedback och öppna disskusioner med Joel.
-Ibland(verkar vara random) när jag startar wildfly(via cmd eller när jag deployar i IntelliJ
-uppstår följande problem:
-Kommunikation till servern fungerar som den ska, men felkoderna i StudentController
-returneras alltid till Insomnia oavsett.
-Inga felmedellanden uppstår i WildFly loggen.
-Så det ser ofta ut som programmet inte fungerar fastän databasen uppdateras.
-Ungefär 66-75% av gångerna jag startar wildFly uppstår det.
-Om det händer: Stäng av och sätt på wildfly några gånger tills det fungerar.
-När det väl fungerar funkar det tills ny deploy/serverstart.
 
-Jag misstänker att det är på grund av Att 100% av CPUN används under start av WildFly och att datorn missar
-detlajer ibland. Jag har inte funnit en annan lösning en att testa att starta flera ggr.
-
-En annan sak jag inte får att fungera är att post och patch Även om jag Kör en flush()
-I början av Min StudentTransaction.getStudent() så fårUpdateStudent i DAOen infon från innan
-Updaten.
-Vet inte om min dator är skräp eller vad det är.
+Jag får fortfarande inte pli på att det ibland inte funkar på min dator, även med din 
+private static final long serialVersionUID = 1L;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
 
 
  standalone -c standalone-full.xml
