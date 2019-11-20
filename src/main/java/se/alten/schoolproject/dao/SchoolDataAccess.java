@@ -143,7 +143,9 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
         if(noHits(hits)){
             List<String> subjectResponse = new ArrayList<>();
             subjectResponse.add(subjectToAdd.getTitle());
-            return getSubjects(subjectResponse);
+
+            Subject response = singleSubjectFromDBByName(subjectToAdd.getTitle());
+            return Response.ok(response).build();
         }
         return Response.status(Response.Status.NOT_ACCEPTABLE).entity("{\"Already exists.\"}").build();
     }
@@ -151,7 +153,14 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
     public Response addStudentToSubject(String studentEmail, String subjectName){
 
         Student studentToAdd =studentTransactionAccess.getStudent(studentEmail);
+        if (studentToAdd.getEmail().equals("")){
+            return Response.status(406).entity("{\"No matching student found.\"}").build();
+        }
+
         Subject subjectToAdd = singleSubjectFromDBByName(subjectName);
+        if (subjectToAdd.getTitle().equals("") ){
+            return Response.status(406).entity("{\"No matching subject found.\"}").build();
+        }
         int AmountOfHits= subjectTransactionAccess.addStudentToSubject(subjectToAdd, studentToAdd);
         return Response.ok().build();
     }
@@ -160,7 +169,13 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
     public Response addTeacherToSubject(String teacherEmail, String subjectName){
 
         Teacher teacherToAdd =teacherTransactionAccess.getTeacher(teacherEmail);
+        if (teacherToAdd.getEmail().equals("")){
+            return Response.status(406).entity("{\"No matching teacher found.\"}").build();
+        }
         Subject subjectToAdd = singleSubjectFromDBByName(subjectName);
+        if (subjectToAdd.getTitle().equals("") ){
+            return Response.status(406).entity("{\"No matching subject found.\"}").build();
+        }
         int AmountOfHits= subjectTransactionAccess.addTeacherToSubject(subjectToAdd, teacherToAdd);
         return Response.ok().build();
     }
@@ -267,7 +282,13 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
     @Override
     public Response addStudentToTeacher(String studentEmail, String teacherEmail) {
         Student studentToAdd =studentTransactionAccess.getStudent(studentEmail);
+        if (studentToAdd.getEmail().equals("") ){
+            return Response.status(406).entity("{\"No matching student found.\"}").build();
+        }
         Teacher teacherToAdd = teacherTransactionAccess.getTeacher(teacherEmail);
+        if (teacherToAdd.getEmail().equals("") ){
+            return Response.status(406).entity("{\"No matching teacher found.\"}").build();
+        }
         int AmountOfHits= teacherTransactionAccess.addStudentToTeacher(teacherToAdd, studentToAdd);
         return Response.ok().build();
     }
@@ -314,7 +335,9 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
     public boolean checkForEmptyVariables(Teacher teacher) {
         return Stream.of(teacher.getForename(), teacher.getLastname(), teacher.getEmail()).anyMatch(String::isBlank);
     }
-
+    public boolean checkForEmptyVariables(Subject subject){
+        return Stream.of(subject.getTitle()).anyMatch(String::isBlank);
+    }
     public boolean noHits(int sqlResponse) {
         if (sqlResponse > 0) {
             return false;
@@ -325,6 +348,9 @@ public class SchoolDataAccess implements SchoolAccessLocal, SchoolAccessRemote {
         List<String> subjectArray= new ArrayList<>();
         subjectArray.add(name);
         List<Subject> recievedSubject = subjectTransactionAccess.getSubjectsByName(subjectArray);
+        if (recievedSubject.size()==0){
+            return subject.toEntity("{}");
+        }
         return recievedSubject.get(0);
     }
 }

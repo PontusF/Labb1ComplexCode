@@ -64,13 +64,13 @@ public class Subject implements Serializable {
                 subject.setStudents(tempStudents);
             }
         } else {
-            subject.setStudents(null);
+            subject.setStudents(new HashSet<>());
         }
         if (jsonObject.containsKey("teacher")) {
             JsonArray jsonArray = jsonObject.getJsonArray("teacher");
             for ( int i = 0; i < jsonArray.size(); i++ ){
                 tempTeachers.add(Teacher.class.cast(jsonArray.get(i)));
-                subject.setTeachers(tempTeachers);
+                subject.setTeachers(new HashSet<>());
             }
         } else {
             subject.setTeachers(null);

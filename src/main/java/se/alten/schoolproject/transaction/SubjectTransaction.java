@@ -50,13 +50,18 @@ public class SubjectTransaction implements SubjectTransactionAccess{
 
     @Override
     public int addStudentToSubject(Subject subject, Student student) {
+        try{
+            entityManager.flush();
+            Query query = entityManager.createNativeQuery("INSERT INTO student_subject(stud_id,subj_id)" +
+                    " VALUES (:studId, :subjId)");
+            query.setParameter("studId", student.getId());
+            query.setParameter("subjId", subject.getId());
+            query.executeUpdate();
+            return 1;
+        }catch(Exception e){
+            return 0;
+        }
 
-        entityManager.flush();
-        Query query = entityManager.createNativeQuery("INSERT INTO student_subject(stud_id,subj_id)" +
-                " VALUES (:studId, :subjId)");
-        query.setParameter("studId", student.getId());
-        query.setParameter("subjId", subject.getId());
-        return query.executeUpdate();
 
     }
 
@@ -82,13 +87,18 @@ public class SubjectTransaction implements SubjectTransactionAccess{
 
     @Override
     public int addTeacherToSubject(Subject subject, Teacher teacher) {
+        try{
+            entityManager.flush();
+            Query query = entityManager.createNativeQuery("INSERT INTO teacher_subject(teach_id,subj_id)" +
+                    " VALUES (:teachId, :subjId)");
+            query.setParameter("teachId", teacher.getId());
+            query.setParameter("subjId", subject.getId());
+            query.executeUpdate();
+            return 1;
+        }catch(Exception e){
+            return 0;
+        }
 
-        entityManager.flush();
-        Query query = entityManager.createNativeQuery("INSERT INTO teacher_subject(teach_id,subj_id)" +
-                " VALUES (:teachId, :subjId)");
-        query.setParameter("teachId", teacher.getId());
-        query.setParameter("subjId", subject.getId());
-        return query.executeUpdate();
 
     }
 

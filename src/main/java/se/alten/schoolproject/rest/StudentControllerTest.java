@@ -9,6 +9,6 @@ class StudentControllerTest {
     @org.junit.jupiter.api.Test
     void updateStudent() {
         Response testResponse =Response.status(422).build();
-        System.out.println(testResponse);
+
     }
 }

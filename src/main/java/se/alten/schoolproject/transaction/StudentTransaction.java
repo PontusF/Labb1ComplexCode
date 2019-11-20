@@ -40,7 +40,8 @@ public class StudentTransaction implements StudentTransactionAccess{
             Student result = Student.class.cast(answer);
             return result;
         }catch(Exception e){
-            return new Student();
+            Student student = new Student();
+            return student.toEntity("{}");
         }
 
 

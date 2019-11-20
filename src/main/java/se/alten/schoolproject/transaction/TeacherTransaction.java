@@ -40,7 +40,8 @@ public class TeacherTransaction implements TeacherTransactionAccess{
             Teacher result = Teacher.class.cast(answer);
             return result;
         }catch(Exception e){
-            return new Teacher();
+            Teacher teacher = new Teacher();
+            return teacher.toEntity("{}");
         }
 
 

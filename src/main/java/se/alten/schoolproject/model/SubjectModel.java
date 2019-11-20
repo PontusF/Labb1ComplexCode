@@ -19,7 +19,6 @@ public class SubjectModel {
         SubjectModel subjectModel = new SubjectModel();
         subjectModel.setTitle(subjectToAdd.getTitle());
 
-        System.out.println(subjectToAdd.getStudents());
         subjectToAdd.getStudents().forEach(student  -> {
             subjectModel.students.add(student.getForename() + " " + student.getLastname() + " " + student.getEmail());
         });
